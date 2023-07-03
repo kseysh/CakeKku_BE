@@ -6,7 +6,7 @@ SECRET_KEY = 'django-insecure-cwn!utml_bvqw24d5i*2_+ws34a2a$ztd=sh_d+$i$v(vuijwf
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -68,6 +68,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 LANGUAGE_CODE = 'ko-kr'
 

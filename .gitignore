@@ -1,4 +1,7 @@
-Cakekku_be/Cakekku_be/__pycache__
-Cakekku_be/db.sqlite3
 venv
 
+Cakekku_be/db.sqlite3
+
+Cakekku_be/Cakekku_be/secrets.json
+Cakekku_be/Cakekku_be/cakekku_key_pair.ppk
+Cakekku_be/Cakekku_be/__pycache__
