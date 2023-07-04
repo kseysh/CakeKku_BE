@@ -1,27 +1,29 @@
 from pathlib import Path
+import json
+from django.core.exceptions import ImproperlyConfigured
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = 'django-insecure-cwn!utml_bvqw24d5i*2_+ws34a2a$ztd=sh_d+$i$v(vuijwf'
+secret_file = BASE_DIR / 'secrets.json'  
 
-DEBUG = True
+with open(secret_file) as file:
+    secrets = json.loads(file.read())
 
-ALLOWED_HOSTS = ['*']
+def get_secret(setting,secrets_dict = secrets):
+    try:
+        return secrets_dict[setting]
+    except KeyError:
+        error_msg = f'Set the {setting} environment variable'
+        raise ImproperlyConfigured(error_msg)
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-]
+SECRET_KEY = get_secret('SECRET_KEY')
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -47,12 +49,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Cakekku_be.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {

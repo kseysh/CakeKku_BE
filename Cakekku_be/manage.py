@@ -6,7 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Cakekku_be.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Cakekku_be.settings.development') # runserver시 settings파일 적용할 때 사용
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
