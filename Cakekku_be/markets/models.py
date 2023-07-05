@@ -19,6 +19,7 @@ class Market(models.Model):
         )
     store_thumbnail_image = models.ImageField(verbose_name="가게 대표 이미지",blank=True,upload_to=upload_to_func)
     store_like = models.ManyToManyField(to=User,blank=True, related_name="like_table")
+    # 좋아요 수로 바꿔주기
     store_hashtag_1 = models.CharField(verbose_name="hashtag_1",default="입체 케이크", max_length=20)
     store_hashtag_2 = models.CharField(verbose_name="hashtag_2",default="캐릭터 케이크", max_length=20) 
 
