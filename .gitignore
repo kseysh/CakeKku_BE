@@ -3,9 +3,11 @@ venv
 Cakekku_be/db.sqlite3
 Cakekku_be/secrets.json
 Cakekku_be/requirements
+Cakekku_be/image
 
+__pycache__
+__init__.py
+migrations
 
 Cakekku_be/Cakekku_be/cakekku_key_pair.ppk
-Cakekku_be/Cakekku_be/__pycache__
 
-Cakekku_be/Cakekku_be/settings/__pycache__
