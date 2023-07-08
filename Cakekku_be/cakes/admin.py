@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cake, OrderDetail
+from .models import Cake
 
 admin.site.register(Cake)
-admin.site.register(OrderDetail)
+#admin.site.register(OrderDetail)
