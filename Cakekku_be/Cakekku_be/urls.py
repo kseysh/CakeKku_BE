@@ -27,8 +27,9 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
     path('marketlist/', MarketListAPIView.as_view()),
-    path('marketlist/lower_price/', OrderingLowerPriceMarketRetrieveAPIView.as_view()),
     path('marketdetail/<int:pk>/', MarketRetrieveAPIView.as_view()),
+    path('createreview/', ReviewCreateAPIView.as_view()),
+
 ]
 
 urlpatterns += static(base.MEDIA_URL, document_root=base.MEDIA_ROOT)
