@@ -29,6 +29,8 @@ urlpatterns = [
     path('marketlist/', MarketListAPIView.as_view()),
     path('marketdetail/<int:pk>/', MarketRetrieveAPIView.as_view()),
     path('createreview/', ReviewCreateAPIView.as_view()),
+    path('createcake/', CakeCreateAPIView.as_view()),
+
 
 ]
 

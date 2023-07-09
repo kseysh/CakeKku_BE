@@ -11,14 +11,16 @@ class MarketListAPIView(APIView):
         order_condition = request.GET.get('order',None)
         if order_condition == 'review_count':
             markets = Market.objects.annotate(review_count=Count('reviews')).order_by('-review_count')
-        # elif order_condition == 'lower_price':
-        #     products = products.extra(
-        #         select={'lower_price'}
-        #     ).order_by('-lower_price')
-        # elif order_condition == 'higher_price':
-        #     queryset = queryset.order_by('higher_price')
+        
+        
+        elif order_condition == 'lower_price':
+            markets = Market.objects.order_by('store_lower_price')
+        elif order_condition == 'higher_price':
+            markets = Market.objects.order_by('-store_lower_price')
+
+
         elif order_condition == 'score':
-            markets = Market.objects.order_by('store_score')
+            markets = Market.objects.order_by('-store_average_score')
         else:
             markets = Market.objects.all()
         marketSerializer = MarketSerializer(markets, many=True)
@@ -69,8 +71,6 @@ class ReviewCreateAPIView(APIView):
             average = total_sum/count
         reviewed_market.store_average_score = average
         reviewed_market.save()
-        print(reviewed_market.store_average_score)
-        print(reviewed_market)
 
         review_serializer = ReviewSerializer(reviewByMarket)
         return Response(review_serializer.data, status=200)
