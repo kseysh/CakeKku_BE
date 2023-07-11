@@ -30,6 +30,9 @@ class MarketRetrieveAPIView(RetrieveAPIView):
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
 
+class MarketList(ListAPIView):
+    queryset = Market.objects.all()
+    serializer_class = MarketSerializer
 
 class MarketLike(APIView):
     def post(self, request):
@@ -73,5 +76,11 @@ class ReviewCreateAPIView(APIView):
         reviewed_market.save()
 
         review_serializer = ReviewSerializer(reviewByMarket)
+        return Response(review_serializer.data, status=200)
+    
+class MyReviewList(APIView):
+    def get(self, request):
+        reviews = Review.objects.filter(review_writer = request.user)
+        review_serializer = ReviewSerializer(reviews, many=True)
         return Response(review_serializer.data, status=200)
         

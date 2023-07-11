@@ -2,9 +2,10 @@ venv
 
 Cakekku_be/db.sqlite3
 Cakekku_be/secrets.json
-Cakekku_be/requirements
+requirements.txt
 Cakekku_be/image
-
+_static
+static
 __pycache__
 __init__.py
 migrations
