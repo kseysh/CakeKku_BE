@@ -1,6 +1,6 @@
 from .base import *
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -23,4 +23,5 @@ INSTALLED_APPS = [
     'cakes',
     'markets',
     'accounts',
+    'corsheaders',
 ]

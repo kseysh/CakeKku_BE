@@ -5,7 +5,6 @@ from uuid import uuid4
 from django.utils import timezone
 
 
-
 class Market(models.Model):
     store_id = models.AutoField(primary_key=True)
     store_name = models.CharField(verbose_name="가게 이름",max_length=20)
@@ -56,6 +55,8 @@ class Review(models.Model):
     review_tag5 = models.BooleanField(verbose_name="#친절해요",default=False)
     review_tag6 = models.BooleanField(verbose_name="#포장이꼼꼼해요",default=False)
     review_created_at = models.DateTimeField(verbose_name="리뷰 작성 시간",auto_now_add=True)
+    review_writer = models.ForeignKey(to=User,verbose_name="리뷰 작성자",null=True,on_delete=models.CASCADE)
+
 
 
 
