@@ -12,9 +12,8 @@ from django.conf.urls.static import static
 from django.views.static import serve
 from django.conf import settings
 
-import re
-
 routers = routers.DefaultRouter()
+routers.register(r'searchmarket',SearchMarketViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -38,11 +37,10 @@ urlpatterns = [
     path('myreviewlist/', MyReviewList.as_view()),
     path('logintempuser/', LoginTempUser.as_view()),
     path('marketlike/',MarketLike.as_view()),
-    path('market/',MarketList.as_view()),
-    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    re_path(r'^image/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]
-
+urlpatterns += routers.urls
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

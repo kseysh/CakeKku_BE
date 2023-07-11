@@ -5,6 +5,9 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework.response import Response
 from .models import Market, Review
 from .serializers import MarketSerializer, ReviewSerializer
+from rest_framework.filters import SearchFilter
+from rest_framework import viewsets
+
 
 class MarketListAPIView(APIView):
     def get(self, request):
@@ -27,10 +30,6 @@ class MarketListAPIView(APIView):
         return Response(marketSerializer.data, status=200)
 
 class MarketRetrieveAPIView(RetrieveAPIView):
-    queryset = Market.objects.all()
-    serializer_class = MarketSerializer
-
-class MarketList(ListAPIView):
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
 
@@ -84,3 +83,10 @@ class MyReviewList(APIView):
         review_serializer = ReviewSerializer(reviews, many=True)
         return Response(review_serializer.data, status=200)
         
+
+
+class SearchMarketViewSet(viewsets.ModelViewSet):
+    queryset = Market.objects.all()
+    serializer_class = MarketSerializer
+    filter_backends = [SearchFilter] # filters에 SearchFilter 지정
+    search_fields = ['store_name',]
