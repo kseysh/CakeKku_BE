@@ -37,8 +37,8 @@ class MarketRetrieveAPIView(RetrieveAPIView):
     serializer_class = MarketSerializer
 
 class MarketLike(APIView):
-    store_id = openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_STRING)
-    @swagger_auto_schema(tags=['마켓에 좋아요 누르는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
+    #store_id = openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_STRING)
+    #@swagger_auto_schema(tags=['마켓에 좋아요 누르는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
     def post(self, request):
         market = Market.objects.get(store_id = request.data["store_id"])
         if request.user in market.store_like_people.all():
@@ -49,27 +49,27 @@ class MarketLike(APIView):
     
 
 class ReviewCreateAPIView(APIView):
-    review_image1 = openapi.Parameter('review_image1', openapi.IN_QUERY, description='review_image1', required=True, type=openapi.TYPE_FILE)
+    review_image1 = openapi.Parameter('review_image1', openapi.IN_QUERY, description='review_image1 / 실제로는 5개까지 가능', required=True, type=openapi.TYPE_FILE)
     review_image2 = openapi.Parameter('review_image2', openapi.IN_QUERY, description='review_image2', required=True, type=openapi.TYPE_FILE)
     review_image3 = openapi.Parameter('review_image3', openapi.IN_QUERY, description='review_image3', required=True, type=openapi.TYPE_FILE)
     review_image4 = openapi.Parameter('review_image4', openapi.IN_QUERY, description='review_image4', required=True, type=openapi.TYPE_FILE)
     review_image5 = openapi.Parameter('review_image5', openapi.IN_QUERY, description='review_image5', required=True, type=openapi.TYPE_FILE)
     review_content = openapi.Parameter('review_content', openapi.IN_QUERY, description='review_content', required=True, type=openapi.TYPE_STRING)
     review_market = openapi.Parameter('review_market', openapi.IN_QUERY, description='review_market', required=True, type=openapi.TYPE_INTEGER)
-    review_tag1= openapi.Parameter('review_tag1', openapi.IN_QUERY, description='review_tag1', required=True, type=openapi.TYPE_STRING)
-    review_tag2= openapi.Parameter('review_tag2', openapi.IN_QUERY, description='review_tag2', required=True, type=openapi.TYPE_STRING)
-    review_tag3= openapi.Parameter('review_tag3', openapi.IN_QUERY, description='review_tag3', required=True, type=openapi.TYPE_STRING)
-    review_tag4= openapi.Parameter('review_tag4', openapi.IN_QUERY, description='review_tag4', required=True, type=openapi.TYPE_STRING)
-    review_tag5= openapi.Parameter('review_tag5', openapi.IN_QUERY, description='review_tag5', required=True, type=openapi.TYPE_STRING)
-    review_score = openapi.Parameter('review_score', openapi.IN_QUERY, description='review_score', required=True, type=openapi.TYPE_STRING)
+    review_tag1= openapi.Parameter('review_tag1', openapi.IN_QUERY, description='review_tag1', required=True, type=openapi.TYPE_BOOLEAN)
+    review_tag2= openapi.Parameter('review_tag2', openapi.IN_QUERY, description='review_tag2', required=True, type=openapi.TYPE_BOOLEAN)
+    review_tag3= openapi.Parameter('review_tag3', openapi.IN_QUERY, description='review_tag3', required=True, type=openapi.TYPE_BOOLEAN)
+    review_tag4= openapi.Parameter('review_tag4', openapi.IN_QUERY, description='review_tag4', required=True, type=openapi.TYPE_BOOLEAN)
+    review_tag5= openapi.Parameter('review_tag5', openapi.IN_QUERY, description='review_tag5', required=True, type=openapi.TYPE_BOOLEAN)
+    review_score = openapi.Parameter('review_score', openapi.IN_QUERY, description='review_score', required=True, type=openapi.TYPE_INTEGER)
     
 
     @swagger_auto_schema(tags=['댓글 생성'],manual_parameters=[
         review_image1,
-        review_image2,
-        review_image3,
-        review_image4,
-        review_image5,
+        #review_image2,
+        #review_image3,
+        #review_image4,
+        #review_image5,
         review_content,
         review_market,
         review_tag1,
