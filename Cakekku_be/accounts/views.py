@@ -3,6 +3,8 @@ from django.contrib import auth
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import User
+from drf_yasg.utils import swagger_auto_schema
+
 class Signup(APIView):
     def post(self, request):
         user = User.objects.create_user(
@@ -42,7 +44,8 @@ class MyInfo(APIView):
 from django.contrib import auth
 
 class LoginTempUser(APIView):
-    def post(self, request):
+    @swagger_auto_schema(tags=['임시 유저로 로그인'], responses={200: 'Success'})
+    def get(self, request):
         username = "user"
         password = "1234"        
         user = auth.authenticate(request, username=username, password=password)

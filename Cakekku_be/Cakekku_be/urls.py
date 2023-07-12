@@ -14,7 +14,6 @@ from django.conf import settings
 
 routers = routers.DefaultRouter()
 routers.register(r'searchmarket',SearchMarketViewSet)
-
 schema_view = get_schema_view(
     openapi.Info(
         title = "cakekku-project",
@@ -37,7 +36,7 @@ urlpatterns = [
     path('myreviewlist/', MyReviewList.as_view()),
     path('logintempuser/', LoginTempUser.as_view()),
     path('marketlike/',MarketLike.as_view()),
-    path('searchbylocationsi/',SearchByMarketLocationSi.as_view()),
+    #path('searchbylocationsi/',SearchByMarketLocationSi.as_view()),
     path('searchbylocationgu/',SearchByMarketLocationGu.as_view()),
     re_path(r'^image/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),

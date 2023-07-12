@@ -8,16 +8,16 @@ from .serializers import MarketSerializer, ReviewSerializer
 from rest_framework.filters import SearchFilter
 from rest_framework import viewsets
 from .models import Market
-from django.shortcuts import get_object_or_404
-
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi  
 
 class MarketListAPIView(APIView):
+    order = openapi.Parameter('order', openapi.IN_QUERY, description='review_count / lower_price / higher_price / score / 입력값이 없을 시 일반 ', required=True, type=openapi.TYPE_STRING)
+    @swagger_auto_schema(tags=['마켓의 전체 리스트를 불러오는 기능'],manual_parameters=[order], responses={200: 'Success'})
     def get(self, request):
         order_condition = request.GET.get('order',None)
         if order_condition == 'review_count':
             markets = Market.objects.annotate(review_count=Count('reviews')).order_by('-review_count')
-        
-        
         elif order_condition == 'lower_price':
             markets = Market.objects.order_by('store_lower_price')
         elif order_condition == 'higher_price':
@@ -30,12 +30,15 @@ class MarketListAPIView(APIView):
             markets = Market.objects.all()
         marketSerializer = MarketSerializer(markets, many=True)
         return Response(marketSerializer.data, status=200)
-
+    
+@swagger_auto_schema(tags=['특정 마켓 정보 불러오는 기능'], responses={200: 'Success'})
 class MarketRetrieveAPIView(RetrieveAPIView):
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
 
 class MarketLike(APIView):
+    store_id = openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_STRING)
+    @swagger_auto_schema(tags=['마켓에 좋아요 누르는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
     def post(self, request):
         market = Market.objects.get(store_id = request.data["store_id"])
         if request.user in market.store_like_people.all():
@@ -46,6 +49,36 @@ class MarketLike(APIView):
     
 
 class ReviewCreateAPIView(APIView):
+    review_image1 = openapi.Parameter('review_image1', openapi.IN_QUERY, description='review_image1', required=True, type=openapi.TYPE_FILE)
+    review_image2 = openapi.Parameter('review_image2', openapi.IN_QUERY, description='review_image2', required=True, type=openapi.TYPE_FILE)
+    review_image3 = openapi.Parameter('review_image3', openapi.IN_QUERY, description='review_image3', required=True, type=openapi.TYPE_FILE)
+    review_image4 = openapi.Parameter('review_image4', openapi.IN_QUERY, description='review_image4', required=True, type=openapi.TYPE_FILE)
+    review_image5 = openapi.Parameter('review_image5', openapi.IN_QUERY, description='review_image5', required=True, type=openapi.TYPE_FILE)
+    review_content = openapi.Parameter('review_content', openapi.IN_QUERY, description='review_content', required=True, type=openapi.TYPE_STRING)
+    review_market = openapi.Parameter('review_market', openapi.IN_QUERY, description='review_market', required=True, type=openapi.TYPE_INTEGER)
+    review_tag1= openapi.Parameter('review_tag1', openapi.IN_QUERY, description='review_tag1', required=True, type=openapi.TYPE_STRING)
+    review_tag2= openapi.Parameter('review_tag2', openapi.IN_QUERY, description='review_tag2', required=True, type=openapi.TYPE_STRING)
+    review_tag3= openapi.Parameter('review_tag3', openapi.IN_QUERY, description='review_tag3', required=True, type=openapi.TYPE_STRING)
+    review_tag4= openapi.Parameter('review_tag4', openapi.IN_QUERY, description='review_tag4', required=True, type=openapi.TYPE_STRING)
+    review_tag5= openapi.Parameter('review_tag5', openapi.IN_QUERY, description='review_tag5', required=True, type=openapi.TYPE_STRING)
+    review_score = openapi.Parameter('review_score', openapi.IN_QUERY, description='review_score', required=True, type=openapi.TYPE_STRING)
+    
+
+    @swagger_auto_schema(tags=['댓글 생성'],manual_parameters=[
+        review_image1,
+        review_image2,
+        review_image3,
+        review_image4,
+        review_image5,
+        review_content,
+        review_market,
+        review_tag1,
+        review_tag2,
+        review_tag3,
+        review_tag4,
+        review_tag5,
+        review_score,
+    ], responses={200: 'Success'})
     def post(self, request):
         review = Review()
         review.review_image1 = request.data.get("review_image1")
@@ -78,15 +111,17 @@ class ReviewCreateAPIView(APIView):
 
         review_serializer = ReviewSerializer(reviewByMarket)
         return Response(review_serializer.data, status=200)
-    
+
 class MyReviewList(APIView):
+    @swagger_auto_schema(tags=['내 리뷰 조회기능'], responses={200: 'Success'})
     def get(self, request):
         reviews = Review.objects.filter(review_writer = request.user)
         review_serializer = ReviewSerializer(reviews, many=True)
         return Response(review_serializer.data, status=200)
         
 
-
+search = openapi.Parameter('search', openapi.IN_QUERY, description='search', required=True, type=openapi.TYPE_STRING)
+@swagger_auto_schema(tags=['마켓 검색 기능 - get만 쓰세용'],manual_parameters=[search], responses={200: 'Success'})
 class SearchMarketViewSet(viewsets.ModelViewSet):
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
@@ -94,6 +129,7 @@ class SearchMarketViewSet(viewsets.ModelViewSet):
     search_fields = ['store_name',]
 
 class SearchByMarketLocationSi(APIView):
+    @swagger_auto_schema(tags=['아직 사용 X'], responses={200: 'Success'})
     def get(self, request):
         address_si = request.GET.get("address_si")
         markets = Market.objects.filter(store_address_si = address_si)
@@ -101,6 +137,8 @@ class SearchByMarketLocationSi(APIView):
         return Response(market_serializer.data, status=200)
     
 class SearchByMarketLocationGu(APIView):
+    address_gu = openapi.Parameter('address_gu', openapi.IN_QUERY, description='address_gu', required=True, type=openapi.TYPE_STRING)
+    @swagger_auto_schema(tags=['마켓을 구 단위로 구분해서 리스트로 보내는 기능'],manual_parameters=[address_gu], responses={200: 'Success'})
     def get(self, request):
         address_gu = request.GET.get("address_gu")
         markets = Market.objects.filter(store_address_gu = address_gu)
