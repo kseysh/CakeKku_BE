@@ -7,6 +7,8 @@ from .models import Market, Review
 from .serializers import MarketSerializer, ReviewSerializer
 from rest_framework.filters import SearchFilter
 from rest_framework import viewsets
+from .models import Market
+from django.shortcuts import get_object_or_404
 
 
 class MarketListAPIView(APIView):
@@ -90,3 +92,17 @@ class SearchMarketViewSet(viewsets.ModelViewSet):
     serializer_class = MarketSerializer
     filter_backends = [SearchFilter] # filters에 SearchFilter 지정
     search_fields = ['store_name',]
+
+class SearchByMarketLocationSi(APIView):
+    def get(self, request):
+        address_si = request.GET.get("address_si")
+        markets = Market.objects.filter(store_address_si = address_si)
+        market_serializer = MarketSerializer(markets, many=True)
+        return Response(market_serializer.data, status=200)
+    
+class SearchByMarketLocationGu(APIView):
+    def get(self, request):
+        address_gu = request.GET.get("address_gu")
+        markets = Market.objects.filter(store_address_gu = address_gu)
+        market_serializer = MarketSerializer(markets, many=True)
+        return Response(market_serializer.data, status=200)

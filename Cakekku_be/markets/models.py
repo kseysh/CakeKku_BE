@@ -8,8 +8,9 @@ from django.utils import timezone
 class Market(models.Model):
     store_id = models.AutoField(primary_key=True)
     store_name = models.CharField(verbose_name="가게 이름",max_length=20)
-    store_address = models.CharField(verbose_name="가게 주소", max_length=50)
-
+    store_address = models.CharField(verbose_name="가게 주소", max_length=10,blank=True,null=True)
+    store_address_si = models.CharField(verbose_name="가게 주소-시", max_length=10,blank=True,null=True)
+    store_address_gu = models.CharField(verbose_name="가게 주소-구", max_length=10,blank=True,null=True)
     def upload_to_func(instance,filename):
         prefix = timezone.now().strftime("%Y/%m/%d")
         file_name = uuid4().hex
