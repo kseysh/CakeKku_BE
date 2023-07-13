@@ -6,11 +6,14 @@ class CakeSerializer(serializers.ModelSerializer):
         model = Cake
         fields = '__all__'
 
-# class OrderDetailSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = OrderDetail
-#         fields = '__all__'
+class OrderDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderDetail
+        fields = '__all__'
 
-
+class MyCakeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MyCake
+        fields = '__all__'
 
 

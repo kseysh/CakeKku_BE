@@ -28,7 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     groups = models.ManyToManyField(Group, related_name='custom_user_groups')
     user_permissions = models.ManyToManyField(Permission, related_name='custom_user_permissions')
-
+    
     def is_staff(self):
         return self.is_admin
     

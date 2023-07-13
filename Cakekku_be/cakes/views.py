@@ -1,20 +1,24 @@
 from django.shortcuts import render
-from django.db.models import Count
 from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
-from .models import Cake
+from .models import Cake, OrderDetail
 from markets.models import Market
-from .serializers import CakeSerializer
+from .serializers import *
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi 
 
 class CakeCreateAPIView(APIView):
-    cake_price = openapi.Parameter('cake_price', openapi.IN_QUERY, description='cake_price', required=True, type=openapi.TYPE_INTEGER)
-    cake_market = openapi.Parameter('cake_market', openapi.IN_QUERY, description='cake_market', required=True, type=openapi.TYPE_INTEGER)
-    cake_shape = openapi.Parameter('cake_shape', openapi.IN_QUERY, description='cake_shape', required=True, type=openapi.TYPE_INTEGER)
-    cake_image = openapi.Parameter('cake_image', openapi.IN_QUERY, description='cake_image', required=True, type=openapi.TYPE_FILE)
-
-    @swagger_auto_schema(tags=['케이크 만드는 기능'],manual_parameters=[cake_price, cake_market,cake_shape, cake_image], responses={200: 'Success'})
+    @swagger_auto_schema(tags=['고정 디자인 케이크 만드는 기능'], request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'cake_price': openapi.Schema(type=openapi.TYPE_INTEGER, description='cake_price'),
+            'cake_market': openapi.Schema(type=openapi.TYPE_INTEGER, description='cake_market'),
+            'cake_shape': openapi.Schema(type=openapi.TYPE_INTEGER, description='cake_shape'),
+            'cake_image': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_BINARY, description='cake_image'),
+        },
+        required=['cake_price', 'cake_market', 'cake_shape', 'cake_image']
+    ), responses={200: 'Success'})
     def post(self,request):
         cake = Cake()
         cake.cake_price = request.data["cake_price"]
@@ -42,4 +46,8 @@ class CakeCreateAPIView(APIView):
             market.store_higher_price = higher_price
         market.save()
         cake_serializer = CakeSerializer(cake)
+
         return Response(cake_serializer.data, status=200)
+    
+class OrderDetailCreateAPIView(CreateAPIView):
+    serializer_class = OrderDetailSerializer

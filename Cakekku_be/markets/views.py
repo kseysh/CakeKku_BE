@@ -10,6 +10,8 @@ from rest_framework import viewsets
 from .models import Market
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi  
+from cakes.models import OrderDetail
+from cakes.serializers import OrderDetailSerializer, MyCakeSerializer
 
 class MarketListAPIView(APIView):
     order = openapi.Parameter('order', openapi.IN_QUERY, description='review_count / lower_price / higher_price / score / 입력값이 없을 시 일반 ', required=True, type=openapi.TYPE_STRING)
@@ -49,11 +51,6 @@ class MarketLike(APIView):
     
 
 class ReviewCreateAPIView(APIView):
-    review_image1 = openapi.Parameter('review_image1', openapi.IN_QUERY, description='review_image1 / 실제로는 5개까지 가능', required=True, type=openapi.TYPE_FILE)
-    review_image2 = openapi.Parameter('review_image2', openapi.IN_QUERY, description='review_image2', required=True, type=openapi.TYPE_FILE)
-    review_image3 = openapi.Parameter('review_image3', openapi.IN_QUERY, description='review_image3', required=True, type=openapi.TYPE_FILE)
-    review_image4 = openapi.Parameter('review_image4', openapi.IN_QUERY, description='review_image4', required=True, type=openapi.TYPE_FILE)
-    review_image5 = openapi.Parameter('review_image5', openapi.IN_QUERY, description='review_image5', required=True, type=openapi.TYPE_FILE)
     review_content = openapi.Parameter('review_content', openapi.IN_QUERY, description='review_content', required=True, type=openapi.TYPE_STRING)
     review_market = openapi.Parameter('review_market', openapi.IN_QUERY, description='review_market', required=True, type=openapi.TYPE_INTEGER)
     review_tag1= openapi.Parameter('review_tag1', openapi.IN_QUERY, description='review_tag1', required=True, type=openapi.TYPE_BOOLEAN)
@@ -64,21 +61,25 @@ class ReviewCreateAPIView(APIView):
     review_score = openapi.Parameter('review_score', openapi.IN_QUERY, description='review_score', required=True, type=openapi.TYPE_INTEGER)
     
 
-    @swagger_auto_schema(tags=['댓글 생성'],manual_parameters=[
-        review_image1,
-        #review_image2,
-        #review_image3,
-        #review_image4,
-        #review_image5,
-        review_content,
-        review_market,
-        review_tag1,
-        review_tag2,
-        review_tag3,
-        review_tag4,
-        review_tag5,
-        review_score,
-    ], responses={200: 'Success'})
+    @swagger_auto_schema(tags=['리뷰 생성'], request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'review_image1': openapi.Schema(type=openapi.TYPE_FILE, description='review_image1'),
+            'review_image2': openapi.Schema(type=openapi.TYPE_FILE, description='review_image2'),
+            'review_image3': openapi.Schema(type=openapi.TYPE_FILE, description='review_image3'),
+            'review_image4': openapi.Schema(type=openapi.TYPE_FILE, description='review_image4'),
+            'review_image5': openapi.Schema(type=openapi.TYPE_FILE, description='review_image5'),
+            'review_content': openapi.Schema(type=openapi.TYPE_STRING, description='review_content'),
+            'review_market': openapi.Schema(type=openapi.TYPE_INTEGER, description='review_market'),
+            'review_tag1': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='review_tag1'),
+            'review_tag2': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='review_tag2'),
+            'review_tag3': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='review_tag3'),
+            'review_tag4': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='review_tag4'),
+            'review_tag5': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='review_tag5'),
+            'review_score': openapi.Schema(type=openapi.TYPE_INTEGER, description='review_score'),
+        },
+        required=['review_image1','review_image2','review_image3','review_image4','review_image5','review_content', 'review_market', 'review_tag1', 'review_tag2', 'review_tag3', 'review_tag4', 'review_tag5', 'review_score']
+    ), responses={200: 'Success'})
     def post(self, request):
         review = Review()
         review.review_image1 = request.data.get("review_image1")
@@ -87,25 +88,24 @@ class ReviewCreateAPIView(APIView):
         review.review_image4 = request.data.get("review_image4")
         review.review_image5 = request.data.get("review_image5")
         review.review_content = request.data.get("review_content")
-        review.review_market = Market.objects.get(store_id = request.data.get("review_market"))
+        review.review_market = Market.objects.get(store_id=request.data.get("review_market"))
         review.review_tag1 = request.data.get("review_tag1")
         review.review_tag2 = request.data.get("review_tag2")
         review.review_tag3 = request.data.get("review_tag3")
         review.review_tag4 = request.data.get("review_tag4")
         review.review_tag5 = request.data.get("review_tag5")
-        review.review_tag6 = request.data.get("review_tag6")
         review.review_score = request.data.get("review_score")
         review.save()
 
         reviewed_market = Market.objects.get(store_id=request.data["review_market"])
-        total_sum =0
-        count =0
-        average =0
+        total_sum = 0
+        count = 0
+        average = 0
         for reviewByMarket in reviewed_market.reviews.all():
             total_sum += reviewByMarket.review_score
             count += 1
-        if count!=0:
-            average = total_sum/count
+        if count != 0:
+            average = total_sum / count
         reviewed_market.store_average_score = average
         reviewed_market.save()
 
@@ -144,3 +144,31 @@ class SearchByMarketLocationGu(APIView):
         markets = Market.objects.filter(store_address_gu = address_gu)
         market_serializer = MarketSerializer(markets, many=True)
         return Response(market_serializer.data, status=200)
+    
+
+class CheckIsLike(APIView):
+    def get(self, request):
+        store_id = request.GET.get("store_id")
+        market = Market.objects.get(store_id=store_id)
+        if request.user in market.store_like_people.all():
+            return Response({'message': True}, status=200)
+        else:
+            return Response({'message': False}, status=200)
+
+class MyLikeList(APIView):
+    def get(self, request):
+        market_list = request.user.like_table.all()
+        market_serializer = MarketSerializer(market_list, many=True)
+        return Response(market_serializer.data, status=200)
+    
+class MyOrderList(APIView):
+    def get(self, request):
+        order_detail_list = request.user.order_details.all()
+        order_detail_serializer = OrderDetailSerializer(order_detail_list,many=True)
+        return Response(order_detail_serializer.data, status = 200)
+    
+class MyDesignCakeList(APIView):
+    def get(self, request):
+        my_design_cake_list = request.user.my_cakes.all()
+        my_cake_serializer = MyCakeSerializer(my_design_cake_list, many=True)
+        return Response(my_cake_serializer.data, status=200)
