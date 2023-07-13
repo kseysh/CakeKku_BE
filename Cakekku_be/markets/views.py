@@ -1,7 +1,6 @@
-from django.shortcuts import render
 from django.db.models import Count
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from .models import Market, Review
 from .serializers import MarketSerializer, ReviewSerializer
@@ -10,8 +9,8 @@ from rest_framework import viewsets
 from .models import Market
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi  
-from cakes.models import OrderDetail
 from cakes.serializers import OrderDetailSerializer, MyCakeSerializer
+from django.contrib.auth.decorators import login_required
 
 class MarketListAPIView(APIView):
     order = openapi.Parameter('order', openapi.IN_QUERY, description='review_count / lower_price / higher_price / score / 입력값이 없을 시 일반 ', required=True, type=openapi.TYPE_STRING)
@@ -39,8 +38,8 @@ class MarketRetrieveAPIView(RetrieveAPIView):
     serializer_class = MarketSerializer
 
 class MarketLike(APIView):
-    #store_id = openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_STRING)
-    #@swagger_auto_schema(tags=['마켓에 좋아요 누르는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
+    store_id = openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_INTEGER)
+    @swagger_auto_schema(tags=['마켓에 좋아요 누르는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
     def post(self, request):
         market = Market.objects.get(store_id = request.data["store_id"])
         if request.user in market.store_like_people.all():
@@ -147,6 +146,8 @@ class SearchByMarketLocationGu(APIView):
     
 
 class CheckIsLike(APIView):
+    store_id= openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_INTEGER)
+    @swagger_auto_schema(tags=['좋아요가 눌려져 있는 스토어인지 확인하는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
     def get(self, request):
         store_id = request.GET.get("store_id")
         market = Market.objects.get(store_id=store_id)

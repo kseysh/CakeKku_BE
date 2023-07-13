@@ -34,10 +34,14 @@ class MyCake(models.Model):
 
 
 
+
+
 class AdditionalOption(models.Model):
     option_id = models.AutoField(primary_key=True)
     option_price = models.IntegerField(default=0,verbose_name="추가 옵션 가격")
     option_name = models.CharField(max_length=20,verbose_name="추가 옵션 이름")
+    def __str__(self):
+        return self.option_name
 
 class OrderDetail(models.Model):
     order_id = models.AutoField(primary_key=True)
@@ -56,3 +60,5 @@ class OrderDetailByMyCake(models.Model):
     order_additional_option = models.ForeignKey(to=AdditionalOption, verbose_name="추가 옵션",on_delete=models.CASCADE,null=True,blank=True)
     order_final_price = models.IntegerField(default=0,verbose_name="추가 옵션 가격")
     is_pickup_complete = models.BooleanField(default=False,verbose_name="픽업 완료 유무")
+
+    

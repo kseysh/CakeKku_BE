@@ -41,8 +41,6 @@ class MyInfo(APIView):
             return Response({"message": "로그아웃 상태입니다."})
 
 
-from django.contrib import auth
-
 class LoginTempUser(APIView):
     @swagger_auto_schema(tags=['임시 유저로 로그인'], responses={200: 'Success'})
     def get(self, request):

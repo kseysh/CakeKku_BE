@@ -27,7 +27,12 @@ class Market(models.Model):
     store_average_score= models.DecimalField(verbose_name="가게 별점",default=0,null=True,max_digits=3,decimal_places=2)
     store_lower_price = models.IntegerField(verbose_name="가게 최저 가격",default=0)
     store_higher_price = models.IntegerField(verbose_name="가게 최고 가격",default=0)
-
+    store_menu_content1 = models.TextField(verbose_name="메뉴 글 1",default="메뉴 소개글을 작성해주세요.")
+    store_menu_content2 = models.TextField(verbose_name="메뉴 글 2",default="메뉴 소개글을 작성해주세요.")
+    store_menu_content3 = models.TextField(verbose_name="메뉴 글 3",default="메뉴 소개글을 작성해주세요.")
+    store_order_form_content1 = models.TextField(verbose_name="주문 양식 글 1",default="주문 양식 소개글을 작성해주세요.")
+    store_order_form_content2 = models.TextField(verbose_name="주문 양식 글 2",default="주문 양식 소개글을 작성해주세요.")
+    store_order_form_content3 = models.TextField(verbose_name="주문 양식 글 3",default="주문 양식 소개글을 작성해주세요.")
 
     def __str__(self):
         return self.store_name
