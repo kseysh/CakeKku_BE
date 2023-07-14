@@ -39,7 +39,7 @@ class MarketLike(APIView):
     def post(self, request):
         market = Market.objects.get(store_id = request.data.get("store_id"))
         user = User.objects.get(id = 1)
-        if user in market.store_like_people.all():
+        if request.user in market.store_like_people.all():
             market.store_like_people.remove(user)
             market.save()
         else:
