@@ -21,14 +21,14 @@ class CakeCreateAPIView(APIView):
     ), responses={200: 'Success'})
     def post(self,request):
         cake = Cake()
-        cake.cake_price = request.data["cake_price"]
+        cake.cake_price = request.data.get("cake_price")
         cake.cake_market = Market.objects.get(store_id = request.data.get("cake_market"))
-        cake.cake_shape = request.data["cake_shape"]
-        cake.cake_image = request.data["cake_image"]
+        cake.cake_shape = request.data.get("cake_shape")
+        cake.cake_image = request.data.get("cake_image")
 
         cake.save()
 
-        market = Market.objects.get(store_id = request.data["cake_market"])
+        market = Market.objects.get(store_id = request.data.get("cake_market"))
         lower_price = 10_000_000
         higher_price = -1
         for cake in market.cakes.all():

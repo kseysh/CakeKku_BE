@@ -36,15 +36,15 @@ class MarketRetrieveAPIView(RetrieveAPIView):
     serializer_class = MarketSerializer
 
 class MarketLike(APIView):
-    store_id = openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_INTEGER)
-    @swagger_auto_schema(tags=['마켓에 좋아요 누르는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
     def post(self, request):
+        market = Market.objects.get(store_id = request.data.get("store_id"))
         user = User.objects.get(id = 1)
-        market = Market.objects.get(store_id = request.data["store_id"])
         if request.user in market.store_like_people.all():
             market.store_like_people.remove(user)
+            market.save()
         else:
             market.store_like_people.add(user)
+            market.save()
         return Response({"message":market.store_like_people.count()})
     
 
@@ -95,7 +95,7 @@ class ReviewCreateAPIView(APIView):
         review.review_score = request.data.get("review_score")
         review.save()
 
-        reviewed_market = Market.objects.get(store_id=request.data["review_market"])
+        reviewed_market = Market.objects.get(store_id=request.data.get("review_market"))
         total_sum = 0
         count = 0
         average = 0
@@ -113,7 +113,8 @@ class ReviewCreateAPIView(APIView):
 class MyReviewList(APIView):
     @swagger_auto_schema(tags=['내 리뷰 조회기능'], responses={200: 'Success'})
     def get(self, request):
-        reviews = Review.objects.filter(review_writer = request.user)
+        user = User.objects.get(id = 1)
+        reviews = Review.objects.filter(review_writer = user)
         review_serializer = ReviewSerializer(reviews, many=True)
         return Response(review_serializer.data, status=200)
         
