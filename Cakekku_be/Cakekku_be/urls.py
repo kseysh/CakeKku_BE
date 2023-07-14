@@ -36,7 +36,7 @@ urlpatterns = [
     path('myreviewlist/', MyReviewList.as_view()),
     path('logintempuser/', LoginTempUser.as_view()),
     path('marketlike/',MarketLike.as_view()),
-    #path('searchbylocationsi/',SearchByMarketLocationSi.as_view()),
+    path('searchbylocationsi/',SearchByMarketLocationSi.as_view()),
     path('searchbylocationgu/',SearchByMarketLocationGu.as_view()),
     path('createorderdetail/',OrderDetailCreateAPIView.as_view()),
     path('checkislike/',CheckIsLike.as_view()),
@@ -44,6 +44,8 @@ urlpatterns = [
     path('myorderlist/',MyOrderList.as_view()),
     path('mydesigncakelist/',MyDesignCakeList.as_view()),
     path('marketcakelist/',MarketCakeList.as_view()),
+    path('marketreviewlist/',MarketReviewList.as_view()),
+    path('cakeadditionaloptionlist/<int:store_id>/',CakeAddtionalOptionList.as_view()),
     re_path(r'^image/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]

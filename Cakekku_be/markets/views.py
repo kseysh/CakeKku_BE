@@ -3,13 +3,13 @@ from rest_framework.views import APIView
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from .models import Market, Review
-from .serializers import MarketSerializer, ReviewSerializer
+from .serializers import *
 from rest_framework.filters import SearchFilter
 from rest_framework import viewsets
 from .models import Market
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi  
-from cakes.serializers import OrderDetailSerializer, MyCakeSerializer
+from cakes.serializers import OrderDetailSerializer, MyCakeSerializer,CakeAdditionalOptionSerializer
 from django.contrib.auth.decorators import login_required
 
 class MarketListAPIView(APIView):
@@ -23,8 +23,6 @@ class MarketListAPIView(APIView):
             markets = Market.objects.order_by('store_lower_price')
         elif order_condition == 'higher_price':
             markets = Market.objects.order_by('-store_lower_price')
-
-
         elif order_condition == 'score':
             markets = Market.objects.order_by('-store_average_score')
         else:
@@ -128,7 +126,8 @@ class SearchMarketViewSet(viewsets.ModelViewSet):
     search_fields = ['store_name',]
 
 class SearchByMarketLocationSi(APIView):
-    @swagger_auto_schema(tags=['아직 사용 X'], responses={200: 'Success'})
+    address_si = openapi.Parameter('address_si', openapi.IN_QUERY, description='address_si', required=True, type=openapi.TYPE_STRING)
+    @swagger_auto_schema(tags=['마켓을 시 단위로 구분해서 리스트로 보내는 기능'], responses={200: 'Success'})
     def get(self, request):
         address_si = request.GET.get("address_si")
         markets = Market.objects.filter(store_address_si = address_si)
@@ -173,3 +172,21 @@ class MyDesignCakeList(APIView):
         my_design_cake_list = request.user.my_cakes.all()
         my_cake_serializer = MyCakeSerializer(my_design_cake_list, many=True)
         return Response(my_cake_serializer.data, status=200)
+
+class CakeAddtionalOptionList(APIView):
+    store_id= openapi.Parameter('store_id', openapi.IN_PATH, description='store_id', required=True, type=openapi.TYPE_INTEGER)
+    @swagger_auto_schema(tags=[''],manual_parameters=[store_id], responses={200: 'Success'})
+    def get(self, request, store_id):
+        market = Market.objects.get(store_id=store_id)
+        market_serializer = CakeAdditionalOptionSerializer(market)
+        return Response(market_serializer.data, status=200)
+
+class MarketReviewList(APIView):
+    store_id= openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_INTEGER)
+    @swagger_auto_schema(tags=['마켓의 리뷰 리스트를 반환해주는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
+    def get(self, request):
+        store_id = request.GET.get("store_id")
+        market = Market.objects.get(store_id = store_id)
+        review_list = market.reviews.all()
+        review_serializer = ReviewSerializer(review_list,many=True)
+        return Response(review_serializer.data, status=200)

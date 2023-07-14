@@ -10,7 +10,7 @@ class Cake(models.Model): # 마켓에 display될 케이크
     cake_price = models.IntegerField(verbose_name="케이크 가격",null=True,blank=True)
     cake_market = models.ForeignKey(Market,verbose_name="케이크 마켓",on_delete=models.CASCADE,related_name="cakes",null=True,blank=True)
     cake_shape = models.IntegerField(verbose_name="케이크 모양",null=True,blank=True)
-
+    cake_name = models.CharField(verbose_name="케이크 이름",default="케이크 이름",max_length=20)
     def upload_to_func(instance,filename):
         prefix = timezone.now().strftime("%Y/%m/%d")
         file_name = uuid4().hex
@@ -19,6 +19,8 @@ class Cake(models.Model): # 마켓에 display될 케이크
             [prefix, file_name, extension,]
         )
     cake_image = models.ImageField(verbose_name="케이크 이미지",null=True,blank=True,upload_to=upload_to_func)
+
+
 
 class MyCake(models.Model):
     my_cake_id =  models.AutoField(primary_key=True)

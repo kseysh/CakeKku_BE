@@ -1,4 +1,4 @@
-from .models import Market, Review
+from .models import *
 from rest_framework import serializers
 
 class MarketSerializer(serializers.ModelSerializer):    
@@ -12,3 +12,12 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = '__all__'
         
+class CakeSizeSerailizer(serializers.ModelSerializer):
+    class Meta:
+        model = CakeSize
+        fields = '__all__'
+
+class BreadSandingSerailizer(serializers.ModelSerializer):
+    class Meta:
+        model = BreadSanding
+        fields = '__all__'

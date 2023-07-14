@@ -54,10 +54,12 @@ class OrderDetailCreateAPIView(CreateAPIView):
 
 class MarketCakeList(APIView):
     store_id= openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_INTEGER)
-    @swagger_auto_schema(tags=['마켓의 케이크를 반환해주는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
+    @swagger_auto_schema(tags=['마켓의 케이크 리스크를 반환해주는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
     def get(self, request):
         store_id = request.GET.get("store_id")
         market = Market.objects.get(store_id = store_id)
         cakes = market.cakes.all()
         cake_serializer = CakeSerializer(cakes,many=True)
         return Response(cake_serializer.data, status=200)
+
+

@@ -4,6 +4,24 @@ import os
 from uuid import uuid4
 from django.utils import timezone
 
+class CakeSize(models.Model):
+    cake_size_id = models.AutoField(primary_key=True)
+    cake_size_name = models.CharField(verbose_name="케이크 사이즈 이름",max_length=20,default="케이크 사이즈 이름")
+    cake_size_plate = models.CharField(verbose_name="몇 인분인지",max_length=10,default=1)
+    cake_size_cm = models.IntegerField(verbose_name="케이크 cm",default=0)
+    price = models.IntegerField(verbose_name="케이크 사이즈 시작 가격",default=0)
+    is_extra_content = models.BooleanField(verbose_name="extra content인지",default=False)
+    extra_content = models.TextField(verbose_name="extra content",default="콘텐트를 입력해주세요.")
+    def __str__(self):
+        return self.cake_size_name
+class BreadSanding(models.Model):
+    bread_sanding_id = models.AutoField(primary_key=True)
+    bread_sanding_content = models.CharField(verbose_name="빵 + 샌딩",default="기본 빵 + 기본 샌딩",max_length=20)
+    price = models.IntegerField(verbose_name="빵 + 샌딩 가격",default=0)
+    is_additional_option = models.BooleanField(verbose_name="추가 옵션인지", default=False)
+    additional_option = models.CharField(verbose_name="추가 옵션",default="추가 옵션",max_length=20)
+    def __str__(self):
+        return self.bread_sanding_content
 
 class Market(models.Model):
     store_id = models.AutoField(primary_key=True)
@@ -33,6 +51,18 @@ class Market(models.Model):
     store_order_form_content1 = models.TextField(verbose_name="주문 양식 글 1",default="주문 양식 소개글을 작성해주세요.")
     store_order_form_content2 = models.TextField(verbose_name="주문 양식 글 2",default="주문 양식 소개글을 작성해주세요.")
     store_order_form_content3 = models.TextField(verbose_name="주문 양식 글 3",default="주문 양식 소개글을 작성해주세요.")
+    store_cake_size1 = models.ForeignKey(to=CakeSize,verbose_name="케이크 사이즈 1",on_delete=models.CASCADE,null=True,blank=True,related_name="cake_size_set_1")
+    store_cake_size2 = models.ForeignKey(to=CakeSize,verbose_name="케이크 사이즈 2",on_delete=models.CASCADE,null=True,blank=True,related_name="cake_size_set_2")
+    store_cake_size3 = models.ForeignKey(to=CakeSize,verbose_name="케이크 사이즈 3",on_delete=models.CASCADE,null=True,blank=True,related_name="cake_size_set_3")
+    store_cake_size4 = models.ForeignKey(to=CakeSize,verbose_name="케이크 사이즈 4",on_delete=models.CASCADE,null=True,blank=True,related_name="cake_size_set_4")
+    store_cake_size5 = models.ForeignKey(to=CakeSize,verbose_name="케이크 사이즈 5",on_delete=models.CASCADE,null=True,blank=True,related_name="cake_size_set_5")
+    store_bread_sanding1 = models.ForeignKey(to=BreadSanding,verbose_name="빵 샌딩 선택 1",on_delete=models.CASCADE,null=True,blank=True,related_name="bread_sanding_set_1")
+    store_bread_sanding2 = models.ForeignKey(to=BreadSanding,verbose_name="빵 샌딩 선택 2",on_delete=models.CASCADE,null=True,blank=True,related_name="bread_sanding_set_2")
+    store_bread_sanding3 = models.ForeignKey(to=BreadSanding,verbose_name="빵 샌딩 선택 3",on_delete=models.CASCADE,null=True,blank=True,related_name="bread_sanding_set_3")
+    store_bread_sanding4 = models.ForeignKey(to=BreadSanding,verbose_name="빵 샌딩 선택 4",on_delete=models.CASCADE,null=True,blank=True,related_name="bread_sanding_set_4")
+    store_bread_sanding5 = models.ForeignKey(to=BreadSanding,verbose_name="빵 샌딩 선택 5",on_delete=models.CASCADE,null=True,blank=True,related_name="bread_sanding_set_5")
+
+
 
     def __str__(self):
         return self.store_name
