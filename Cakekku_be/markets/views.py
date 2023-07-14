@@ -39,11 +39,12 @@ class MarketLike(APIView):
     store_id = openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_INTEGER)
     @swagger_auto_schema(tags=['마켓에 좋아요 누르는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
     def post(self, request):
+        user = User.objects.get(id = 1)
         market = Market.objects.get(store_id = request.data["store_id"])
         if request.user in market.store_like_people.all():
-            market.store_like_people.remove(request.user)
+            market.store_like_people.remove(user)
         else:
-            market.store_like_people.add(request.user)
+            market.store_like_people.add(user)
         return Response({"message":market.store_like_people.count()})
     
 
@@ -148,28 +149,32 @@ class CheckIsLike(APIView):
     store_id= openapi.Parameter('store_id', openapi.IN_QUERY, description='store_id', required=True, type=openapi.TYPE_INTEGER)
     @swagger_auto_schema(tags=['좋아요가 눌려져 있는 스토어인지 확인하는 기능'],manual_parameters=[store_id], responses={200: 'Success'})
     def get(self, request):
+        user = User.objects.get(id = 1)
         store_id = request.GET.get("store_id")
         market = Market.objects.get(store_id=store_id)
-        if request.user in market.store_like_people.all():
+        if user in market.store_like_people.all():
             return Response({'message': True}, status=200)
         else:
             return Response({'message': False}, status=200)
 
 class MyLikeList(APIView):
     def get(self, request):
-        market_list = request.user.like_table.all()
+        user = User.objects.get(id = 1)
+        market_list = user.like_table.all()
         market_serializer = MarketSerializer(market_list, many=True)
         return Response(market_serializer.data, status=200)
     
 class MyOrderList(APIView):
     def get(self, request):
-        order_detail_list = request.user.order_details.all()
+        user = User.objects.get(id = 1)
+        order_detail_list = user.order_details.all()
         order_detail_serializer = OrderDetailSerializer(order_detail_list,many=True)
         return Response(order_detail_serializer.data, status = 200)
     
 class MyDesignCakeList(APIView):
     def get(self, request):
-        my_design_cake_list = request.user.my_cakes.all()
+        user = User.objects.get(id = 1)
+        my_design_cake_list = user.my_cakes.all()
         my_cake_serializer = MyCakeSerializer(my_design_cake_list, many=True)
         return Response(my_cake_serializer.data, status=200)
 
