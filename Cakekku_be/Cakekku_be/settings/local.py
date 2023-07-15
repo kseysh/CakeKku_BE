@@ -23,5 +23,5 @@ INSTALLED_APPS = [
     'cakes',
     'markets',
     'accounts',
-
 ]
+

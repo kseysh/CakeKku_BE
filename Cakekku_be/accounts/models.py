@@ -23,12 +23,12 @@ class UserManager(BaseUserManager):
     
 class User(AbstractBaseUser, PermissionsMixin):
     userID = models.CharField(max_length=50, unique = True)
-    
+    user_point = models.IntegerField(verbose_name="유저 포인트",default=0)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     groups = models.ManyToManyField(Group, related_name='custom_user_groups')
     user_permissions = models.ManyToManyField(Permission, related_name='custom_user_permissions')
-
+    
     def is_staff(self):
         return self.is_admin
     
